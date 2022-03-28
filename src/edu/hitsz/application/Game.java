@@ -1,12 +1,9 @@
 package edu.hitsz.application;
 
 import edu.hitsz.aircraft.*;
-import edu.hitsz.bullet.AbstractBullet;
-import edu.hitsz.basic.FlyingObject;
-import edu.hitsz.prop.AbstractProp;
-import edu.hitsz.prop.Blood;
-import edu.hitsz.prop.Bomb;
-import edu.hitsz.prop.Bullet;
+import edu.hitsz.bullet.BaseBullet;
+import edu.hitsz.basic.AbstractFlyingObject;
+import edu.hitsz.prop.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,8 +33,8 @@ public class Game extends JPanel {
 
     private final HeroAircraft heroAircraft;
     private final List<AbstractAircraft> enemyAircrafts;
-    private final List<AbstractBullet> heroBullets;
-    private final List<AbstractBullet> enemyBullets;
+    private final List<BaseBullet> heroBullets;
+    private final List<BaseBullet> enemyBullets;
     private final List<AbstractProp> abstractProps;
 
     private int enemyMaxNumber = 5;
@@ -52,13 +49,20 @@ public class Game extends JPanel {
     private int cycleDuration = 600;
     private int cycleTime = 0;
 
-    // 实例化Random类以产生随机数，用于生成道具
+    //实例化Random类以产生随机数，用于生成道具
     private Random random = new Random();
 
+    //工厂模式，用于生成道具和敌机
+    private PropFactory propFactory;
+    private AbstractProp prop;
+    private AircraftFactory aircraftFactory;
+    private AbstractAircraft enemyAircraft;
+
     public Game() {
-        heroAircraft = new HeroAircraft(
+        //单例模式构造heroAircraft
+        heroAircraft = HeroAircraft.getHeroInstance(
                 Main.WINDOW_WIDTH / 2,
-                Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight() ,
+                Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
                 0, 0, 100);
 
         enemyAircrafts = new LinkedList<>();
@@ -92,24 +96,25 @@ public class Game extends JPanel {
                     //这个也是对的，用random实例化方便一点
                     //int flag = (int)( Math.random()*10 ) % 2;
                     int flag = random.nextInt(2);
-                    if(flag == 1){
-                        enemyAircrafts.add(new MobEnemy(
-                                (int) ( Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth()))*1,
-                                (int) ( Math.random() * Main.WINDOW_HEIGHT * 0.2)*1,
+                    if (flag == 1) {
+                        aircraftFactory = new MobFactory();
+                        enemyAircraft = aircraftFactory.createAircraft(
+                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())) * 1,
+                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.2) * 1,
                                 0,
                                 10,
-                                30
-                        ));
-                    }else{
-                        enemyAircrafts.add(new EliteEnemy(
-                                (int) ( Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth()))*1,
-                                (int) ( Math.random() * Main.WINDOW_HEIGHT * 0.2)*1,
+                                30);
+                        enemyAircrafts.add(enemyAircraft);
+                    } else {
+                        aircraftFactory = new EliteFactory();
+                        enemyAircraft = aircraftFactory.createAircraft(
+                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())) * 1,
+                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.2) * 1,
                                 0,
                                 10,
-                                30
-                        ));
+                                30);
+                        enemyAircrafts.add(enemyAircraft);
                     }
-
                 }
                 // 飞机射出子弹
                 shootAction();
@@ -175,7 +180,7 @@ public class Game extends JPanel {
             }
         }*/
         for (AbstractAircraft enemyAircraft : enemyAircrafts) {
-            if (enemyAircraft instanceof EliteEnemy){
+            if (enemyAircraft instanceof EliteEnemy) {
                 enemyBullets.addAll(enemyAircraft.shoot());
             }
         }
@@ -185,10 +190,10 @@ public class Game extends JPanel {
     }
 
     private void bulletsMoveAction() {
-        for (AbstractBullet bullet : heroBullets) {
+        for (BaseBullet bullet : heroBullets) {
             bullet.forward();
         }
-        for (AbstractBullet bullet : enemyBullets) {
+        for (BaseBullet bullet : enemyBullets) {
             bullet.forward();
         }
     }
@@ -199,7 +204,7 @@ public class Game extends JPanel {
         }
     }
 
-    private void propMoveAction(){
+    private void propMoveAction() {
         for (AbstractProp abstractProp : abstractProps) {
             abstractProp.forward();
         }
@@ -214,8 +219,8 @@ public class Game extends JPanel {
      */
     private void crashCheckAction() {
         // 敌机子弹攻击英雄 （finished）
-        for (AbstractBullet bullet : enemyBullets){
-            if (bullet.notValid()){
+        for (BaseBullet bullet : enemyBullets) {
+            if (bullet.notValid()) {
                 continue;
             }
             if (heroAircraft.crash(bullet)) {
@@ -227,7 +232,7 @@ public class Game extends JPanel {
         }
 
         // 英雄子弹攻击敌机
-        for (AbstractBullet bullet : heroBullets) {
+        for (BaseBullet bullet : heroBullets) {
             if (bullet.notValid()) {
                 continue;
             }
@@ -243,32 +248,37 @@ public class Game extends JPanel {
                     enemyAircraft.decreaseHp(bullet.getPower());
                     bullet.vanish();
                     if (enemyAircraft.notValid()) {
-                    //if (true) {
+                        //if (true) {
                         // 获得分数，产生道具补给 (finished)
-                        if (enemyAircraft instanceof EliteEnemy){
+                        if (enemyAircraft instanceof EliteEnemy) {
 
-                            int flag = random.nextInt(4);
+                            //适当降低降落道具的频率
+                            int flag = random.nextInt(7);
 
-                            switch (flag){
-                                case 0:
-                                    break;
+                            switch (flag) {
                                 case 1:
-                                    abstractProps.add(new Blood(enemyAircraft.getLocationX(),
+                                    propFactory = new BloodFactory();
+                                    prop = propFactory.createProp(enemyAircraft.getLocationX(),
                                             enemyAircraft.getLocationY(),
                                             0,
-                                            5));
+                                            5);
+                                    abstractProps.add(prop);
                                     break;
                                 case 2:
-                                    abstractProps.add(new Bomb(enemyAircraft.getLocationX(),
+                                    propFactory = new BombFactory();
+                                    prop = propFactory.createProp(enemyAircraft.getLocationX(),
                                             enemyAircraft.getLocationY(),
                                             0,
-                                            5));
+                                            5);
+                                    abstractProps.add(prop);
                                     break;
                                 case 3:
-                                    abstractProps.add(new Bullet(enemyAircraft.getLocationX(),
+                                    propFactory = new BulletFactory();
+                                    prop = propFactory.createProp(enemyAircraft.getLocationX(),
                                             enemyAircraft.getLocationY(),
                                             0,
-                                            5));
+                                            5);
+                                    abstractProps.add(prop);
                                     break;
                                 default:
                                     break;
@@ -286,18 +296,18 @@ public class Game extends JPanel {
         }
 
         // 我方获得道具，道具生效 (finished)
-        for (AbstractProp abstractProp : abstractProps)   {
-            if (abstractProp.notValid()){
+        for (AbstractProp abstractProp : abstractProps) {
+            if (abstractProp.notValid()) {
                 continue;
             }
-            if(heroAircraft.crash(abstractProp) || abstractProp.crash(heroAircraft)){
-                if (abstractProp instanceof Blood){
+            if (heroAircraft.crash(abstractProp) || abstractProp.crash(heroAircraft)) {
+                if (abstractProp instanceof Blood) {
                     heroAircraft.increaseHp(((Blood) abstractProp).getBlood());
                     abstractProp.vanish();
-                }else if (abstractProp instanceof  Bomb){
+                } else if (abstractProp instanceof Bomb) {
                     System.out.println("BombSupply active!");
                     abstractProp.vanish();
-                }else if (abstractProp instanceof Bullet){
+                } else if (abstractProp instanceof Bullet) {
                     System.out.println("FireSupply active!");
                     abstractProp.vanish();
                 }
@@ -315,10 +325,10 @@ public class Game extends JPanel {
      * 无效的原因可能是撞击或者飞出边界
      */
     private void postProcessAction() {
-        enemyBullets.removeIf(FlyingObject::notValid);
-        heroBullets.removeIf(FlyingObject::notValid);
-        enemyAircrafts.removeIf(FlyingObject::notValid);
-        abstractProps.removeIf(FlyingObject::notValid);
+        enemyBullets.removeIf(AbstractFlyingObject::notValid);
+        heroBullets.removeIf(AbstractFlyingObject::notValid);
+        enemyAircrafts.removeIf(AbstractFlyingObject::notValid);
+        abstractProps.removeIf(AbstractFlyingObject::notValid);
     }
 
 
@@ -330,7 +340,7 @@ public class Game extends JPanel {
      * 重写paint方法
      * 通过重复调用paint方法，实现游戏动画
      *
-     * @param  g
+     * @param g
      */
     @Override
     public void paint(Graphics g) {
@@ -360,12 +370,12 @@ public class Game extends JPanel {
 
     }
 
-    private void paintImageWithPositionRevised(Graphics g, List<? extends FlyingObject> objects) {
+    private void paintImageWithPositionRevised(Graphics g, List<? extends AbstractFlyingObject> objects) {
         if (objects.size() == 0) {
             return;
         }
 
-        for (FlyingObject object : objects) {
+        for (AbstractFlyingObject object : objects) {
             BufferedImage image = object.getImage();
             assert image != null : objects.getClass().getName() + " has no image! ";
             g.drawImage(image, object.getLocationX() - image.getWidth() / 2,

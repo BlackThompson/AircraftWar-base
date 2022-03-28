@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class FlyingObject
+abstract class AbstractFlyingObject
 {
     # int locationX
     # int locationY
@@ -12,9 +12,9 @@ abstract class FlyingObject
     # int height
     # boolean isValid
 
-    + FlyingObject(int locationX, int locationY, int speedX, int speedY):void
+    + AbstractFlyingObject(int locationX, int locationY, int speedX, int speedY):void
     + forward():void
-    + crash(FlyingObject flyingObject):boolean
+    + crash(AbstractFlyingObject AbstractFlyingObject):boolean
     + setLocation(double locationX, double locationY):void
     + getLocationX():int
     + getLocationY():int
@@ -33,34 +33,60 @@ abstract class AbstractAircraft
     + decreaseHp(int decrease):void
     + increaseHp(int increase):void
     + getHp():int
-    + {abstract} shoot():List<AbstractBullet>
- }
+    + {abstract} shoot():List<BaseBullet>
+}
 
-class AbstractBullet
+interface PropFactory
+{
+    + public createProp(int locationX, int locationY, int speedX, int speedY):AbstractProp
+}
+
+interface AircraftFactory
+{
+    + public createAircraft(int locationX, int locationY, int speedX, int speedY, int hp):AbstractAircraft
+}
+
+class BaseBullet
 {
     - int power
-    + AbstractBullet(int locationX, int locationY, int speedX, int speedY, int power):void
+    + BaseBullet(int locationX, int locationY, int speedX, int speedY, int power)
     + forward():void
 	+ getPower():int
 }
 
 class AbstractProp
 {
-    + AbstractProp(int locationX, int locationY, int speedX, int speedY, int power):void
+    + AbstractProp(int locationX, int locationY, int speedX, int speedY)
     + forward():void
 }
 
-FlyingObject <|-- AbstractAircraft
-FlyingObject <|-- AbstractBullet
-FlyingObject <|-- AbstractProp
+PropFactory <|.. BloodFactory
+PropFactory <|.. BombFactory
+PropFactory <|.. BulletFactory
+
+BloodFactory ..> Blood:create
+BulletFactory ..> Bullet:create
+BombFactory ..> Bomb:create
+
+AircraftFactory <|.. BossFactory
+AircraftFactory <|.. EliteFactory
+AircraftFactory <|.. MobFactory
+
+BossFactory ..> Boss:create
+EliteFactory ..> EliteEnemy:create
+MobFactory ..> MobEnemy:create
+
+AbstractFlyingObject <|-- AbstractAircraft
+AbstractFlyingObject <|-- BaseBullet
+AbstractFlyingObject <|-- AbstractProp
 
 AbstractAircraft <|-- HeroAircraft
 AbstractAircraft <|-- MobEnemy
 AbstractAircraft <|-- EliteEnemy
 AbstractAircraft <|-- Boss
 
-AbstractBullet <|-- HeroBullet
-AbstractBullet <|-- EnemyBullet
+BaseBullet <|-- HeroBullet
+BaseBullet <|-- EnemyBullet
 
 AbstractProp <|-- Blood
 AbstractProp <|-- Bomb
@@ -70,46 +96,79 @@ class HeroAircraft {
     - int shootNum
     - int power
     - int direction
-    + HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp):void
+    + HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
-    + shoot():List<AbstractBullet>
+    + shoot():List<BaseBullet>
+}
+
+class Boss {
+    + Boss(int locationX, int locationY, int speedX, int speedY, int hp)
+    + shoot():List<BaseBullet>
 }
 
 class MobEnemy {
-    + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp):void
+    + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
-    + shoot():List<AbstractBullet>
+    + shoot():List<BaseBullet>
 }
 
 class EliteEnemy {
-    + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp):void
+    + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
-    + shoot():List<AbstractBullet>
+    + shoot():List<BaseBullet>
 }
+
+class BossFactory{
+    + createAircraft(int locationX, int locationY, int speedX, int speedY, int hp):Boss
+}
+
+class EliteFactory{
+    + createAircraft(int locationX, int locationY, int speedX, int speedY, int hp):EliteEnemy
+}
+
+class MobFactory{
+    + createAircraft(int locationX, int locationY, int speedX, int speedY, int hp):MobEnemy
+}
+
 
 class HeroBullet {
     + HeroBullet(int locationX, int locationY,
-     int speedX, int speedY, int power):void
+     int speedX, int speedY, int power)
 }
 
 class EnemyBullet {
     + EnemyBullet(int locationX, int locationY,
-     int speedX, int speedY, int power):void
+     int speedX, int speedY, int power)
 }
 
 class Blood{
     - int blood
-    + public Blood(int locationX, int locationY, int speedX, int speedY):void
+    + public Blood(int locationX, int locationY, int speedX, int speedY)
+    + public getBlood():int
 }
 
 class Bullet{
-    + public Bullet(int locationX, int locationY, int speedX, int speedY):void
+    + public Bullet(int locationX, int locationY, int speedX, int speedY)
 }
 
 class Bomb{
-    + public Bomb(int locationX, int locationY, int speedX, int speedY):void
+    + public Bomb(int locationX, int locationY, int speedX, int speedY)
 }
 
+class BloodFactory
+{
+    + createProp(int locationX, int locationY, int speedX, int speedY ):Blood
+}
+
+class BombFactory
+{
+    + createProp(int locationX, int locationY, int speedX, int speedY):Bomb
+}
+
+class BulletFactory
+{
+    + createProp(int locationX, int locationY, int speedX, int speedY):Bullet
+}
 
 
 @enduml

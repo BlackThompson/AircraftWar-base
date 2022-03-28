@@ -5,11 +5,14 @@ package edu.hitsz.prop;
  */
 public class Blood extends AbstractProp {
 
-    private int blood = 50;
-
     public Blood(int locationX, int locationY, int speedX, int speedY) {
         super(locationX, locationY, speedX, speedY);
     }
 
-    public int getBlood(){return blood;}
+    private int hpIncrease = 50;
+
+    public int getBlood() {
+        return hpIncrease;
+    }
+
 }

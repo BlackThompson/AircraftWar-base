@@ -1,6 +1,6 @@
 package edu.hitsz.aircraft;
 
-import edu.hitsz.bullet.AbstractBullet;
+import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.HeroBullet;
 
 import java.util.LinkedList;
@@ -18,14 +18,27 @@ public class HeroAircraft extends AbstractAircraft {
     private int direction = -1;  //子弹射击方向 (向上发射：-1，向下发射：1)
 
     /**
+     * 单例模式：懒汉式
+     * 因为构造函数为有参构造，故不可以使用饿汉式（笔记）
+     */
+    private static HeroAircraft heroInstance = null;
+
+    /**
      * @param locationX 英雄机位置x坐标
      * @param locationY 英雄机位置y坐标
      * @param speedX 英雄机射出的子弹的基准速度（英雄机无特定速度）
      * @param speedY 英雄机射出的子弹的基准速度（英雄机无特定速度）
      * @param hp    初始生命值
      */
-    public HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
+    private HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
+    }
+
+    public static synchronized HeroAircraft getHeroInstance(int locationX, int locationY, int speedX, int speedY, int hp){
+        if (heroInstance == null){
+            heroInstance = new HeroAircraft(locationX,locationY,speedX,speedY,hp);
+        }
+        return heroInstance;
     }
 
     @Override
@@ -38,20 +51,21 @@ public class HeroAircraft extends AbstractAircraft {
      * 通过射击产生子弹
      * @return 射击出的子弹List
      */
-    public List<AbstractBullet> shoot() {
-        List<AbstractBullet> res = new LinkedList<>();
+    public List<BaseBullet> shoot() {
+        List<BaseBullet> res = new LinkedList<>();
         int x = this.getLocationX();
         int y = this.getLocationY() + direction*2;
         int speedX = 0;
         int speedY = this.getSpeedY() + direction*5;
-        AbstractBullet abstractBullet;
+        BaseBullet baseBullet;
         for(int i=0; i<shootNum; i++){
             // 子弹发射位置相对飞机位置向前偏移
             // 多个子弹横向分散
-            abstractBullet = new HeroBullet(x + (i*2 - shootNum + 1)*10, y, speedX, speedY, power);
-            res.add(abstractBullet);
+            baseBullet = new HeroBullet(x + (i*2 - shootNum + 1)*10, y, speedX, speedY, power);
+            res.add(baseBullet);
         }
         return res;
     }
+
 
 }
