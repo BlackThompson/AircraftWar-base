@@ -9,7 +9,7 @@ import edu.hitsz.basic.AbstractFlyingObject;
  *
  * @author Black
  */
-//public class AbstractProp extends AbstractFlyingObject {
+
 public abstract class AbstractProp extends AbstractFlyingObject {
 
     public AbstractProp(int locationX, int locationY, int speedX, int speedY){

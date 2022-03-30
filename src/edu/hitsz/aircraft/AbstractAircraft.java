@@ -32,7 +32,10 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
         }
     }
 
-    //用于血包加血
+    /**
+     * 用于血包回血
+     * @param increase:回血的数值
+     */
     public void increaseHp(int increase){
         hp += increase;
         if(hp >= maxHp){

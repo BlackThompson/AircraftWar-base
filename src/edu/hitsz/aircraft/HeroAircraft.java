@@ -66,6 +66,4 @@ public class HeroAircraft extends AbstractAircraft {
         }
         return res;
     }
-
-
 }
