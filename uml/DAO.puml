@@ -1,0 +1,44 @@
+@startuml
+class Player{
+
+    - String name
+    - int score
+    # Date date
+
+    + getDate() : Date
+    + getName() : String
+    + getScore() : int
+    + Player(int score, String name, Date data)
+    + compareTo(Player player) : int
+}
+
+interface PlayerDao{
+    + getAll() : List<Player>
+    + addNewPlayer(Player player) : void
+    + playerRead() : void
+    + playerWrite(List<Player> players) : void
+    + playerPrint(PlayerDao playerDao) : void
+}
+
+class PlayerDaoImpl{
+    - List<Player> players
+    + PlayerDaoImpl()
+    + getAll() : List<Player>
+    + addNewPlayer(Player player) : void
+    + playerRead() : void
+    + playerWrite(List<Player> players) : void
+    + playerPrint(PlayerDao playerDao) : void
+}
+
+interface Serializable{}
+interface Comparable{}
+class Game{}
+
+PlayerDaoImpl --> Player
+PlayerDaoImpl ..|> PlayerDao
+Game ..> PlayerDao
+Player ..|> Serializable
+Player ..|>  Comparable
+
+
+@enduml

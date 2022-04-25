@@ -1,5 +1,7 @@
 package edu.hitsz.prop;
 
+import edu.hitsz.aircraft.AbstractAircraft;
+
 /**
  * @author Black
  */
@@ -15,4 +17,7 @@ public class Blood extends AbstractProp {
         return hpIncrease;
     }
 
+    public void active(AbstractAircraft heroAircraft) {
+        heroAircraft.increaseHp(hpIncrease);
+    }
 }

@@ -40,7 +40,7 @@ class EliteEnemyTest {
     @Test
     void crash() {
         System.out.println("**--- crash Executed ---**");
-        HeroAircraft heroAircraft = HeroAircraft.getHeroInstance(100, 100, 0, 0, 100);
+        HeroAircraft heroAircraft = HeroAircraft.getHeroInstance();
         assumeTrue(eliteEnemy.crash(heroAircraft));
         System.out.println("Crashed!");
     }

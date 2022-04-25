@@ -1,0 +1,47 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+interface ShootStrategy
+{
+    + shoot(AbstractAircraft aircraft) : List<BaseBullet>
+}
+class ShootContext
+{
+    - ShootStrategy shootStrategy
+    + ShootContext(ShootStrategy strategy)
+    + setShootStrategy(ShootStrategy shootStrategy): void
+    + executeStrategy(AbstractAircraft aircraft):List<BaseBullet>
+}
+class BossSpreadShoot
+{
+    + shoot(AbstractAircraft aircraft) : List<BaseBullet>
+}
+
+class EnemyDirectShoot
+{
+    + shoot(AbstractAircraft aircraft) : List<BaseBullet>
+}
+
+class HeroDirectShoot
+{
+    + shoot(AbstractAircraft aircraft) : List<BaseBullet>
+}
+
+class HeroSpreadShoot
+{
+    + shoot(AbstractAircraft aircraft) : List<BaseBullet>
+}
+
+class Game{}
+HeroDirectShoot ..|> ShootStrategy
+BossSpreadShoot ..|> ShootStrategy
+EnemyDirectShoot ..|> ShootStrategy
+HeroSpreadShoot ..|> ShootStrategy
+
+ShootContext o--> ShootStrategy
+Game --> ShootContext
+Game ..> HeroSpreadShoot
+Game ..> HeroDirectShoot
+Game ..> BossSpreadShoot
+Game ..> EnemyDirectShoot
+@enduml

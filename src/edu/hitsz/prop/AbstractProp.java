@@ -25,4 +25,6 @@ public abstract class AbstractProp extends AbstractFlyingObject {
             vanish();
         }
     }
+
+    public void active(){};
 }

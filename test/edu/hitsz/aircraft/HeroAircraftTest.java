@@ -11,8 +11,7 @@ class HeroAircraftTest {
 
     @BeforeEach
     void beforeEach() {
-        heroAircraft = HeroAircraft.getHeroInstance(100, 100,
-                0, 0, 100);
+        heroAircraft = HeroAircraft.getHeroInstance();
     }
 
     @AfterEach
