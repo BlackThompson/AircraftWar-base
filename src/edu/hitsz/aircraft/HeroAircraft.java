@@ -4,6 +4,8 @@ import edu.hitsz.application.ImageManager;
 import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.HeroBullet;
+import edu.hitsz.config.AircraftHp;
+import edu.hitsz.config.Difficulty;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.Blood;
 import edu.hitsz.prop.Bomb;
@@ -23,7 +25,7 @@ public class HeroAircraft extends AbstractAircraft {
      * 攻击方式
      */
     private int shootNum = 1;     //子弹一次发射数量
-    private int power = 30;       //子弹伤害
+    private int power = Difficulty.heroBulletPower;       //子弹伤害
     private int direction = -1;  //子弹射击方向 (向上发射：-1，向下发射：1)
 
     /**
@@ -45,7 +47,7 @@ public class HeroAircraft extends AbstractAircraft {
 
     public static synchronized HeroAircraft getHeroInstance() {
         int locationX = Main.WINDOW_WIDTH / 2, locationY = Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
-                speedX = 0, speedY = 0, hp = 100;
+                speedX = 0, speedY = 0, hp = AircraftHp.heroAircraftHp;
         if (heroInstance == null) {
             heroInstance = new HeroAircraft(locationX, locationY, speedX, speedY, hp);
         }
@@ -58,7 +60,7 @@ public class HeroAircraft extends AbstractAircraft {
     }
 
 
-   /* *//**
+    /* *//**
      * 道具生效
      *
      * @param abstractProps

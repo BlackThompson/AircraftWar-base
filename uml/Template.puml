@@ -1,0 +1,27 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+abstract class Game{
+    + increaseDifficulty(int time):void
+}
+
+class EasyGame{
+        + increaseDifficulty(int time):void
+}
+
+class NormalGame{
+        + increaseDifficulty(int time):void
+}
+
+class HardGame{
+        + increaseDifficulty(int time):void
+}
+
+
+
+Game --|> HardGame
+Game --|> EasyGame
+Game --|> NormalGame
+
+@enduml

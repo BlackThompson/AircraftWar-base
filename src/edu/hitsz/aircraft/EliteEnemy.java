@@ -3,6 +3,8 @@ package edu.hitsz.aircraft;
 import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.EnemyBullet;
+import edu.hitsz.config.Difficulty;
+import edu.hitsz.config.Probability;
 import edu.hitsz.prop.*;
 
 import java.util.LinkedList;
@@ -27,7 +29,7 @@ public class EliteEnemy extends AbstractAircraft {
     /**
      * 子弹一次发射数量
      */
-    private int power = 20;
+    private int power = Difficulty.enemyBulletPower;
     /**
      * 子弹射击方向 (向上发射：-1，向下发射：1)
      */
@@ -83,41 +85,48 @@ public class EliteEnemy extends AbstractAircraft {
 
     /**
      * 产生道具
+     *
      * @param abstractProps
      * @param enemyAircraft
      */
     public void propGenerate(List<AbstractProp> abstractProps, AbstractAircraft enemyAircraft) {
         //适当降低降落道具的频率
-        int flag = random.nextInt(7);
 
-        switch (flag) {
-            case 1:
-                propFactory = new BloodFactory();
-                prop = propFactory.createProp(enemyAircraft.getLocationX(),
-                        enemyAircraft.getLocationY(),
-                        0,
-                        5);
-                abstractProps.add(prop);
-            break;
-            case 2:
-                propFactory = new BombFactory();
-                prop = propFactory.createProp(enemyAircraft.getLocationX(),
-                        enemyAircraft.getLocationY(),
-                        0,
-                        5);
-                abstractProps.add(prop);
-            break;
-            case 3:
-                propFactory = new BulletFactory();
-                prop = propFactory.createProp(enemyAircraft.getLocationX(),
-                        enemyAircraft.getLocationY(),
-                        0,
-                        5);
-                abstractProps.add(prop);
-            break;
-            default:
-                break;
+        double generateFlag = Math.random();
+
+        if (generateFlag < Probability.propProbability) {
+            int flag = random.nextInt(3);
+            switch (flag) {
+                case 0:
+                    propFactory = new BloodFactory();
+                    prop = propFactory.createProp(enemyAircraft.getLocationX(),
+                            enemyAircraft.getLocationY(),
+                            0,
+                            5);
+                    abstractProps.add(prop);
+                    break;
+                case 1:
+                    propFactory = new BombFactory();
+                    prop = propFactory.createProp(enemyAircraft.getLocationX(),
+                            enemyAircraft.getLocationY(),
+                            0,
+                            5);
+                    abstractProps.add(prop);
+                    break;
+                case 2:
+                    propFactory = new BulletFactory();
+                    prop = propFactory.createProp(enemyAircraft.getLocationX(),
+                            enemyAircraft.getLocationY(),
+                            0,
+                            5);
+                    abstractProps.add(prop);
+                    break;
+                default:
+                    break;
+            }
         }
+
+
     }
 }
 

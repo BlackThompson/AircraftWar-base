@@ -12,7 +12,7 @@ class BloodTest {
 
     @BeforeEach
     void setUp() {
-        blood = new Blood(100,1000, 0, 10);
+        blood = new Blood(100, 1000, 0, 10);
     }
 
     @AfterEach
@@ -21,12 +21,12 @@ class BloodTest {
     }
 
     @BeforeAll
-    static void beforeAll(){
+    static void beforeAll() {
         System.out.println("**--- BloodTest Begin ---**");
     }
 
     @AfterAll
-    static void afterAll(){
+    static void afterAll() {
         System.out.println("**--- BloodTest End ---**");
     }
 

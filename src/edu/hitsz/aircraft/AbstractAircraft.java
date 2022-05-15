@@ -21,21 +21,22 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
         this.maxHp = hp;
     }
 
-    public void decreaseHp(int decrease){
+    public void decreaseHp(int decrease) {
         hp -= decrease;
-        if(hp <= 0){
-            hp=0;
+        if (hp <= 0) {
+            hp = 0;
             vanish();
         }
     }
 
     /**
      * 用于血包回血
+     *
      * @param increase:回血的数值
      */
-    public void increaseHp(int increase){
+    public void increaseHp(int increase) {
         hp += increase;
-        if(hp >= maxHp){
+        if (hp >= maxHp) {
             hp = maxHp;
         }
     }
@@ -47,13 +48,13 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
 
     /**
      * 飞机射击方法，可射击对象必须实现
-     * @return
-     *  可射击对象需实现，返回子弹
-     *  非可射击对象空实现，返回null
+     *
+     * @return 可射击对象需实现，返回子弹
+     * 非可射击对象空实现，返回null
      */
     //public abstract List<BaseBullet> shoot();
-
-    public void propGenerate(){}
+    public void propGenerate() {
+    }
 
 }
 

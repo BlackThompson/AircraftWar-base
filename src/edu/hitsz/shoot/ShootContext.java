@@ -8,15 +8,15 @@ import java.util.List;
 public class ShootContext {
     private ShootStrategy shootStrategy;
 
-    public ShootContext(ShootStrategy shootStrategy){
+    public ShootContext(ShootStrategy shootStrategy) {
         this.shootStrategy = shootStrategy;
     }
 
-    public void setShootStrategy(ShootStrategy shootStrategy){
+    public void setShootStrategy(ShootStrategy shootStrategy) {
         this.shootStrategy = shootStrategy;
     }
 
-    public List<BaseBullet> executeStrategy(AbstractAircraft aircraft){
+    public List<BaseBullet> executeStrategy(AbstractAircraft aircraft) {
         return shootStrategy.shoot(aircraft);
     }
 }

@@ -21,12 +21,12 @@ class EliteEnemyTest {
     }
 
     @BeforeAll
-    static void beforeAll(){
+    static void beforeAll() {
         System.out.println("**--- EliteEnemyTest Begin ---**");
     }
 
     @AfterAll
-    static void afterAll(){
+    static void afterAll() {
         System.out.println("**--- EliteEnemyTest End ---**");
     }
 

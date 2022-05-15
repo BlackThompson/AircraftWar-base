@@ -3,6 +3,7 @@ package edu.hitsz.shoot;
 import edu.hitsz.aircraft.AbstractAircraft;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.HeroBullet;
+import edu.hitsz.config.Difficulty;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class HeroSpreadShoot implements ShootStrategy {
     /**
      * 子弹一次发射数量
      */
-    private int power = 20;
+    private int power = Difficulty.heroBulletPower;
     /**
      * 子弹射击方向 (向上发射：-1，向下发射：1)
      */

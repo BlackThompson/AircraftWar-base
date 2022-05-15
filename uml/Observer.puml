@@ -1,0 +1,66 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class edu.hitsz.prop.BombObserver{
+    - int bombScore
+    - List<AbstractAircraft> aircraftList
+    - List<BaseBullet> bulletList
+    + addEnemyAircraft(AbstractAircraft aircraft):void
+    + addEnemyBullet(BaseBullet bullet):void
+    + vanishAll() :int
+
+}
+
+class Game{
+
+}
+
+abstract class edu.hitsz.aircraft.AbstractAircraft
+{
+    + {abstract} shoot():List<BaseBullet>
+}
+
+class edu.hitsz.bullet.BaseBullet
+{
+    - int power
+    + forward():void
+	+ getPower():int
+}
+
+class edu.hitsz.bullet.EnemyBullet {
+    + EnemyBullet(int locationX, int locationY,
+     int speedX, int speedY, int power)
+}
+
+edu.hitsz.bullet.EnemyBullet --|> edu.hitsz.bullet.BaseBullet
+
+class edu.hitsz.aircraft.HeroAircraft
+{
+    + shoot():List<BaseBullet>
+}
+
+class edu.hitsz.aircraft.EliteEnemy {
+
+    + shoot():List<BaseBullet>
+}
+
+class edu.hitsz.aircraft.Boss {
+
+    + shoot():List<BaseBullet>
+}
+
+class edu.hitsz.aircraft.MobEnemy {
+
+    + shoot():List<BaseBullet>
+}
+
+Game ..> edu.hitsz.prop.BombObserver
+
+edu.hitsz.aircraft.Boss --|> edu.hitsz.aircraft.AbstractAircraft
+edu.hitsz.aircraft.EliteEnemy --|> edu.hitsz.aircraft.AbstractAircraft
+edu.hitsz.aircraft.HeroAircraft --|> edu.hitsz.aircraft.AbstractAircraft
+edu.hitsz.aircraft.MobEnemy --|> edu.hitsz.aircraft.AbstractAircraft
+
+edu.hitsz.prop.BombObserver o--> edu.hitsz.aircraft.AbstractAircraft
+edu.hitsz.prop.BombObserver o--> edu.hitsz.bullet.BaseBullet
+@enduml
